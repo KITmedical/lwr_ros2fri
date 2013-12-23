@@ -11,9 +11,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 ## System dependencies are found with CMake's conventions
-# find_package(Boost REQUIRED COMPONENTS system)
-find_package(Qt4 COMPONENTS QtNetwork REQUIRED)
-include(${QT_USE_FILE})
+find_package(Boost REQUIRED COMPONENTS system)
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -73,7 +71,7 @@ SET(CMAKE_CXX_FLAGS "-O2 -Wall -Werror")
 include_directories(
   ${catkin_INCLUDE_DIRS}
   include
-  ${QT_INCLUDES}
+  ${Boost_INCLUDE_DIRS}
 )
 
 ## Declare a cpp library
@@ -94,7 +92,7 @@ add_executable(lwr_ros2fri
 ## Specify libraries to link a library or executable target against
 target_link_libraries(lwr_ros2fri
   ${catkin_LIBRARIES}
-  ${QT_LIBRARIES}
+  ${Boost_LIBRARIES}
 )
 
 #############

@@ -16,6 +16,7 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, co
    m_friSrcPort(p_friSrcPort),
    m_friDestPort(p_friDestPort)
 {
+  // TODO next: start FRI Thread
 }
 /*------------------------------------------------------------------------}}}-*/
 
