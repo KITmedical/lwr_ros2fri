@@ -6,6 +6,11 @@
 // library includes
 #include <ros/ros.h>
 
+#include <boost/thread.hpp>
+#include <boost/asio.hpp>
+
+#include <friComm.h>
+
 // custom includes
 
 
@@ -36,7 +41,7 @@ class RosInterpolatorFri
 
 
     // constructors
-    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosSetCartesianTopic, const std::string& p_rosGetCartesianTopic, uint16_t p_friSrcPort, uint16_t p_friDestPort);
+    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosSetCartesianTopic, const std::string& p_rosGetCartesianTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
 
     // overwritten methods
 
@@ -47,14 +52,25 @@ class RosInterpolatorFri
 
   private:
     // methods
+    void runFri();
+    void friRecvStart();
+    void friRecvCallback(const boost::system::error_code& p_error, std::size_t p_recvLength);
+    void printFri(const tFriMsrData& p_friMsrData);
 
     // variables
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
     std::string m_rosSetCartesianTopic;
     std::string m_rosGetCartesianTopic;
-    uint16_t m_friSrcPort;
-    uint16_t m_friDestPort;
+
+    uint16_t m_friRecvPort;
+    uint16_t m_friSendPort;
+    boost::thread* m_friThread;
+    boost::asio::io_service* m_friIoService;
+    boost::asio::ip::udp::socket* m_friRecvSocket;
+    boost::asio::ip::udp::endpoint m_friRecvEndpoint;
+    boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
+    tFriMsrData m_lastFriMsrData;
 
 
 };
