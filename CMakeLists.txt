@@ -12,6 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+find_package(Qt4 COMPONENTS QtNetwork REQUIRED)
+include(${QT_USE_FILE})
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -71,6 +73,7 @@ SET(CMAKE_CXX_FLAGS "-O2 -Wall -Werror")
 include_directories(
   ${catkin_INCLUDE_DIRS}
   include
+  ${QT_INCLUDES}
 )
 
 ## Declare a cpp library
@@ -79,16 +82,20 @@ include_directories(
 # )
 
 ## Declare a cpp executable
-# add_executable(lwr_ros2fri_node src/lwr_ros2fri_node.cpp)
+add_executable(lwr_ros2fri
+  src/RosInterpolatorFri.cpp
+  src/main.cpp
+)
 
 ## Add cmake target dependencies of the executable/library
 ## as an example, message headers may need to be generated before nodes
 # add_dependencies(lwr_ros2fri_node lwr_ros2fri_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(lwr_ros2fri_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(lwr_ros2fri
+  ${catkin_LIBRARIES}
+  ${QT_LIBRARIES}
+)
 
 #############
 ## Install ##
