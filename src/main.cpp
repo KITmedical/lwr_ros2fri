@@ -6,10 +6,10 @@ main(int argc, char** argv)
 {
   ros::init(argc, argv, "lwr_ros2fri");
 
-  std::string rosSetJointTopic = "/robot/lwr/set_joint";
-  std::string rosGetJointTopic = "/robot/lwr/get_joint";
-  std::string rosSetCartesianTopic = "/robot/lwr/set_cartesian";
-  std::string rosGetCartesianTopic = "/robot/lwr/get_cartesian";
+  std::string rosSetJointTopic = "/robots/lwr/set_joint";
+  std::string rosGetJointTopic = "/robots/lwr/get_joint";
+  std::string rosSetCartesianTopic = "/robots/lwr/set_cartesian";
+  std::string rosGetCartesianTopic = "/robots/lwr/get_cartesian";
   uint16_t friRecvPort = 40008;
   uint16_t friSendPort = 49938;
 
@@ -46,6 +46,7 @@ main(int argc, char** argv)
 
   RosInterpolatorFri rosInterpolatorFri(rosSetJointTopic, rosGetJointTopic, rosSetCartesianTopic, rosGetCartesianTopic, friRecvPort, friSendPort);
 
+  std::cout << "Spinning" << std::endl;
   ros::spin();
 
   return 0;

@@ -8,6 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   lwr_analytical_kinematics
   lwr_friremote
+  ahbstring
 )
 
 ## System dependencies are found with CMake's conventions

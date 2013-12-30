@@ -5,6 +5,7 @@
 // library includes
 
 // custom includes
+#include <ahbstring.h>
 
 
 /*---------------------------------- public: -----------------------------{{{-*/
@@ -17,6 +18,15 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, co
    m_friSendPort(p_friSendPort)
 {
   m_friThread = new boost::thread(boost::bind(&RosInterpolatorFri::runFri, this));
+
+  m_rosCurrentJointState.position.resize(LBR_MNJ, 0);
+  m_rosCurrentJointState.velocity.resize(LBR_MNJ, 0);
+  m_rosCurrentJointState.effort.resize(LBR_MNJ, 0);
+
+  m_rosSetJointTopicSub = m_rosNode.subscribe<sensor_msgs::JointState>(m_rosSetJointTopic, 1, &RosInterpolatorFri::rosSetJointCallback, this);
+  m_rosGetJointTopicPub = m_rosNode.advertise<sensor_msgs::JointState>(m_rosGetJointTopic, 1);
+  m_rosSetCartesianTopicSub = m_rosNode.subscribe<geometry_msgs::Pose>(m_rosSetCartesianTopic, 1, &RosInterpolatorFri::rosSetCartesianCallback, this);
+  m_rosGetCartesianTopicPub = m_rosNode.advertise<geometry_msgs::Pose>(m_rosGetCartesianTopic, 1);
 }
 /*------------------------------------------------------------------------}}}-*/
 
@@ -56,6 +66,9 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   memcpy(&m_lastFriMsrData, m_friRecvBuffer.data(), sizeof(m_lastFriMsrData));
   printFri(m_lastFriMsrData);
 
+  updateRosFromFri();
+  rosPublish();
+
   // TODO send tFriCmdData
  
   friRecvStart();
@@ -73,5 +86,33 @@ RosInterpolatorFri::printFri(const tFriMsrData& p_friMsrData)
   }
   printf("\n");
   printf("---\n");
+}
+
+void
+RosInterpolatorFri::updateRosFromFri()
+{
+  for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
+    m_rosCurrentJointState.position[jointIdx] = m_lastFriMsrData.data.msrJntPos[jointIdx];
+  }
+}
+
+
+void
+RosInterpolatorFri::rosSetCartesianCallback(const geometry_msgs::Pose::ConstPtr& poseMsg)
+{
+    std::cout << "rosSetCartesianCallback: poseMsg=" << *poseMsg << std::endl;
+}
+
+void
+RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg)
+{
+    std::cout << "rosSetJointCallback: jointsMsg=" << *jointsMsg << std::endl;
+}
+
+void
+RosInterpolatorFri::rosPublish()
+{
+  //TODO m_rosGetCartesianTopicPub.publish(m_rosCurrentCartesianPose);
+  m_rosGetJointTopicPub.publish(m_rosCurrentJointState);
 }
 /*------------------------------------------------------------------------}}}-*/

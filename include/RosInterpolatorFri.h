@@ -5,6 +5,8 @@
 
 // library includes
 #include <ros/ros.h>
+#include <geometry_msgs/Pose.h>
+#include <sensor_msgs/JointState.h>
 
 #include <boost/thread.hpp>
 #include <boost/asio.hpp>
@@ -57,6 +59,12 @@ class RosInterpolatorFri
     void friRecvCallback(const boost::system::error_code& p_error, std::size_t p_recvLength);
     void printFri(const tFriMsrData& p_friMsrData);
 
+    void updateRosFromFri();
+
+    void rosSetCartesianCallback(const geometry_msgs::Pose::ConstPtr& poseMsg);
+    void rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg);
+    void rosPublish();
+
     // variables
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
@@ -72,7 +80,13 @@ class RosInterpolatorFri
     boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
     tFriMsrData m_lastFriMsrData;
 
-
+    ros::NodeHandle m_rosNode;
+    ros::Subscriber m_rosSetCartesianTopicSub;
+    ros::Publisher m_rosGetCartesianTopicPub;
+    ros::Subscriber m_rosSetJointTopicSub;
+    ros::Publisher m_rosGetJointTopicPub;
+    geometry_msgs::Pose m_rosCurrentCartesianPose;
+    sensor_msgs::JointState m_rosCurrentJointState;
 };
 
 #endif // _ROS_INTERPOLATOR_FRI_H_
