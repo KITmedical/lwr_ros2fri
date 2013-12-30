@@ -14,7 +14,7 @@
 #include <friComm.h>
 
 // custom includes
-
+#include <gpi/GeneralPurposeInterpolator.hpp>
 
 // forward declarations
 
@@ -79,6 +79,7 @@ class RosInterpolatorFri
     boost::asio::ip::udp::endpoint m_friRecvEndpoint;
     boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
     tFriMsrData m_lastFriMsrData;
+    tFriCmdData m_currentFriMsrCmdData;
 
     ros::NodeHandle m_rosNode;
     ros::Subscriber m_rosSetCartesianTopicSub;
@@ -87,6 +88,15 @@ class RosInterpolatorFri
     ros::Publisher m_rosGetJointTopicPub;
     geometry_msgs::Pose m_rosCurrentCartesianPose;
     sensor_msgs::JointState m_rosCurrentJointState;
+
+    GeneralPurposeInterpolator m_gpi;
+    std::vector<double> m_gpiPosCurrentBuffer;
+    std::vector<double> m_gpiPosTargetBuffer;
+    std::vector<double> m_gpiPosMinBuffer;
+    std::vector<double> m_gpiPosMaxBuffer;
+    std::vector<double> m_gpiVelCurrentBuffer;
+    std::vector<double> m_gpiVelMaxBuffer;
+    std::vector<double> m_gpiAccelMaxBuffer;
 };
 
 #endif // _ROS_INTERPOLATOR_FRI_H_
