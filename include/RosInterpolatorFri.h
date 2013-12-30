@@ -77,9 +77,12 @@ class RosInterpolatorFri
     boost::asio::io_service* m_friIoService;
     boost::asio::ip::udp::socket* m_friRecvSocket;
     boost::asio::ip::udp::endpoint m_friRecvEndpoint;
+    boost::asio::ip::udp::resolver* m_friResolver;
+    boost::asio::ip::udp::socket* m_friSendSocket;
+    boost::asio::ip::udp::endpoint m_friSendEndpoint;
     boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
     tFriMsrData m_lastFriMsrData;
-    tFriCmdData m_currentFriMsrCmdData;
+    tFriCmdData m_currentFriCmdData;
 
     ros::NodeHandle m_rosNode;
     ros::Subscriber m_rosSetCartesianTopicSub;

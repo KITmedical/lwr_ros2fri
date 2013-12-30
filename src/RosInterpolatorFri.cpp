@@ -42,6 +42,11 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, co
   m_gpi.setMode(1);
 
   // fri
+  memset(&m_currentFriCmdData, 0, sizeof(m_currentFriCmdData));
+  m_currentFriCmdData.head.packetSize = FRI_CMD_DATA_SIZE;
+  m_currentFriCmdData.head.datagramId = FRI_DATAGRAM_ID_CMD;
+  m_currentFriCmdData.cmd.cmdFlags = FRI_CMD_JNTPOS;
+
   m_friThread = new boost::thread(boost::bind(&RosInterpolatorFri::runFri, this));
 
   // ros
@@ -62,6 +67,19 @@ RosInterpolatorFri::runFri()
 {
   m_friIoService = new boost::asio::io_service();
   m_friRecvSocket = new boost::asio::ip::udp::socket(*m_friIoService, boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), m_friRecvPort));
+
+  m_friSendSocket = new boost::asio::ip::udp::socket(*m_friIoService);
+  m_friResolver = new boost::asio::ip::udp::resolver(*m_friIoService);
+  boost::asio::ip::udp::resolver::query sendPortQuery(boost::asio::ip::udp::v4(),
+                                                      "localhost",
+                                                      ahb::string::toString(m_friSendPort));
+  m_friSendEndpoint = *(m_friResolver->resolve(sendPortQuery));
+
+  try {
+    m_friSendSocket->connect(m_friSendEndpoint);
+  } catch (boost::system::system_error const& e) {
+    ROS_FATAL_STREAM("RosInterpolatorFri: Failed to connect to FRI robot: " << e.what());
+  }
 
   friRecvStart();
 
@@ -100,7 +118,16 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   m_gpi.getVNow(m_gpiVelCurrentBuffer);
   std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
 
-  // TODO send m_gpiPosCurrentBuffer inside m_currentFriMsrCmdData
+  m_currentFriCmdData.head.sendSeqCount++;
+  m_currentFriCmdData.head.reflSeqCount = m_lastFriMsrData.head.sendSeqCount;
+  for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
+    m_currentFriCmdData.cmd.jntPos[jointIdx] = m_gpiPosCurrentBuffer[jointIdx];
+  }
+  try {
+    m_friSendSocket->send(boost::asio::buffer(&m_currentFriCmdData, sizeof(m_currentFriCmdData)));
+  } catch (boost::system::system_error const& e) {
+    ROS_FATAL_STREAM("RosInterpolatorFri: Failed to send to FRI robot: " << e.what());
+  }
  
   friRecvStart();
 }
