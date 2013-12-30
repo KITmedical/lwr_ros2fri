@@ -43,7 +43,7 @@ class RosInterpolatorFri
 
 
     // constructors
-    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosSetCartesianTopic, const std::string& p_rosGetCartesianTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
+    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
 
     // overwritten methods
 
@@ -61,15 +61,12 @@ class RosInterpolatorFri
 
     void updateRosFromFri();
 
-    void rosSetCartesianCallback(const geometry_msgs::Pose::ConstPtr& poseMsg);
     void rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg);
     void rosPublish();
 
     // variables
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
-    std::string m_rosSetCartesianTopic;
-    std::string m_rosGetCartesianTopic;
 
     uint16_t m_friRecvPort;
     uint16_t m_friSendPort;
@@ -85,11 +82,8 @@ class RosInterpolatorFri
     tFriCmdData m_currentFriCmdData;
 
     ros::NodeHandle m_rosNode;
-    ros::Subscriber m_rosSetCartesianTopicSub;
-    ros::Publisher m_rosGetCartesianTopicPub;
     ros::Subscriber m_rosSetJointTopicSub;
     ros::Publisher m_rosGetJointTopicPub;
-    geometry_msgs::Pose m_rosCurrentCartesianPose;
     sensor_msgs::JointState m_rosCurrentJointState;
 
     GeneralPurposeInterpolator m_gpi;

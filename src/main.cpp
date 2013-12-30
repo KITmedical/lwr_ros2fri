@@ -6,10 +6,8 @@ main(int argc, char** argv)
 {
   ros::init(argc, argv, "lwr_ros2fri");
 
-  std::string rosSetJointTopic = "/robots/lwr/set_joint";
-  std::string rosGetJointTopic = "/robots/lwr/get_joint";
-  std::string rosSetCartesianTopic = "/robots/lwr/set_cartesian";
-  std::string rosGetCartesianTopic = "/robots/lwr/get_cartesian";
+  std::string rosSetJointTopic = "/robots/lwr/direct/set_joint";
+  std::string rosGetJointTopic = "/robots/lwr/direct/get_joint";
   uint16_t friRecvPort = 40008;
   uint16_t friSendPort = 49938;
 
@@ -17,8 +15,6 @@ main(int argc, char** argv)
   struct option longopts[] = {
     { "rossetjointtopic", required_argument, NULL, 0 },
     { "rosgetjointtopic", required_argument, NULL, 0 },
-    { "rossetcartesiantopic", required_argument, NULL, 0 },
-    { "rosgetcartesiantopic", required_argument, NULL, 0 },
     { "frirecvport", required_argument, NULL, 0 },
     { "frisendport", required_argument, NULL, 0 },
   };
@@ -31,10 +27,6 @@ main(int argc, char** argv)
         rosSetJointTopic = optarg;
       } else if (strcmp(longopts[optindex].name, "rosgetjointtopic") == 0) {
         rosGetJointTopic = optarg;
-      } else if (strcmp(longopts[optindex].name, "rossetcartesiantopic") == 0) {
-        rosSetCartesianTopic = optarg;
-      } else if (strcmp(longopts[optindex].name, "rosgetcartesiantopic") == 0) {
-        rosGetCartesianTopic = optarg;
       } else if (strcmp(longopts[optindex].name, "frirecvport") == 0) {
         friRecvPort = atoi(optarg);
       } else if (strcmp(longopts[optindex].name, "frisendport") == 0) {
@@ -44,7 +36,7 @@ main(int argc, char** argv)
     }
   }
 
-  RosInterpolatorFri rosInterpolatorFri(rosSetJointTopic, rosGetJointTopic, rosSetCartesianTopic, rosGetCartesianTopic, friRecvPort, friSendPort);
+  RosInterpolatorFri rosInterpolatorFri(rosSetJointTopic, rosGetJointTopic, friRecvPort, friSendPort);
 
   std::cout << "Spinning" << std::endl;
   ros::spin();

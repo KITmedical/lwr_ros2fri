@@ -10,11 +10,9 @@
 
 
 /*---------------------------------- public: -----------------------------{{{-*/
-RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosSetCartesianTopic, const std::string& p_rosGetCartesianTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
+RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
   :m_rosSetJointTopic(p_rosSetJointTopic),
    m_rosGetJointTopic(p_rosGetJointTopic),
-   m_rosSetCartesianTopic(p_rosSetCartesianTopic),
-   m_rosGetCartesianTopic(p_rosGetCartesianTopic),
    m_friRecvPort(p_friRecvPort),
    m_friSendPort(p_friSendPort),
    m_gpi(LBR_MNJ),
@@ -56,8 +54,6 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, co
 
   m_rosSetJointTopicSub = m_rosNode.subscribe<sensor_msgs::JointState>(m_rosSetJointTopic, 1, &RosInterpolatorFri::rosSetJointCallback, this);
   m_rosGetJointTopicPub = m_rosNode.advertise<sensor_msgs::JointState>(m_rosGetJointTopic, 1);
-  m_rosSetCartesianTopicSub = m_rosNode.subscribe<geometry_msgs::Pose>(m_rosSetCartesianTopic, 1, &RosInterpolatorFri::rosSetCartesianCallback, this);
-  m_rosGetCartesianTopicPub = m_rosNode.advertise<geometry_msgs::Pose>(m_rosGetCartesianTopic, 1);
 }
 /*------------------------------------------------------------------------}}}-*/
 
@@ -156,13 +152,6 @@ RosInterpolatorFri::updateRosFromFri()
 
 
 void
-RosInterpolatorFri::rosSetCartesianCallback(const geometry_msgs::Pose::ConstPtr& poseMsg)
-{
-  std::cout << "rosSetCartesianCallback: poseMsg=" << *poseMsg << std::endl;
-  // TODO
-}
-
-void
 RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg)
 {
   std::cout << "rosSetJointCallback: jointsMsg=" << *jointsMsg << std::endl;
@@ -175,7 +164,6 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 void
 RosInterpolatorFri::rosPublish()
 {
-  //TODO m_rosGetCartesianTopicPub.publish(m_rosCurrentCartesianPose);
   m_rosGetJointTopicPub.publish(m_rosCurrentJointState);
 }
 /*------------------------------------------------------------------------}}}-*/
