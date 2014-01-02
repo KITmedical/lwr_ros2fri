@@ -106,7 +106,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   }
 
   memcpy(&m_lastFriMsrData, m_friRecvBuffer.data(), sizeof(m_lastFriMsrData));
-  printFri(m_lastFriMsrData);
+  //printFri(m_lastFriMsrData);
 
   updateRosFromFri();
   rosPublish();
@@ -114,7 +114,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   m_gpi.interpolate();
   m_gpi.getXNow(m_gpiPosCurrentBuffer);
   m_gpi.getVNow(m_gpiVelCurrentBuffer);
-  std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
+  //std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
 
   m_currentFriCmdData.head.sendSeqCount++;
   m_currentFriCmdData.head.reflSeqCount = m_lastFriMsrData.head.sendSeqCount;
@@ -156,7 +156,8 @@ RosInterpolatorFri::updateRosFromFri()
 void
 RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg)
 {
-  std::cout << "rosSetJointCallback: jointsMsg=" << *jointsMsg << std::endl;
+  //std::cout << "rosSetJointCallback: jointsMsg=" << *jointsMsg << std::endl;
+
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     m_gpiPosTargetBuffer[jointIdx] = jointsMsg->position[jointIdx];
   }
