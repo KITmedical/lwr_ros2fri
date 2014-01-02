@@ -6,9 +6,9 @@ main(int argc, char** argv)
 {
   ros::init(argc, argv, "lwr_ros2fri");
 
-  std::string rosSetJointTopic = "/robots/lwr/direct/set_joint";
-  std::string rosGetJointTopic = "/robots/lwr/direct/get_joint";
-  std::string rosStateTopic = "/robots/lwr/direct/state";
+  std::string rosSetJointTopic = "lwr/direct/set_joint";
+  std::string rosGetJointTopic = "lwr/direct/get_joint";
+  std::string rosStateTopic = "lwr/direct/state";
   uint16_t friRecvPort = 40008;
   uint16_t friSendPort = 49938;
 
