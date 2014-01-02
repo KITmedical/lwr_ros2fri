@@ -6,6 +6,7 @@ main(int argc, char** argv)
 {
   ros::init(argc, argv, "lwr_ros2fri");
 
+  std::string robotName = "lwr";
   std::string rosSetJointTopic = "lwr/direct/set_joint";
   std::string rosGetJointTopic = "lwr/direct/get_joint";
   std::string rosStateTopic = "lwr/direct/state";
@@ -14,6 +15,7 @@ main(int argc, char** argv)
 
   const char optstring[] = "";
   struct option longopts[] = {
+    { "robotname", required_argument, NULL, 0 },
     { "rossetjointtopic", required_argument, NULL, 0 },
     { "rosgetjointtopic", required_argument, NULL, 0 },
     { "frirecvport", required_argument, NULL, 0 },
@@ -24,7 +26,9 @@ main(int argc, char** argv)
   while ((opt = getopt_long(argc, argv, optstring, longopts, &optindex)) != -1) {
     switch (opt) {
     case 0:
-      if (strcmp(longopts[optindex].name, "rossetjointtopic") == 0) {
+      if (strcmp(longopts[optindex].name, "robotname") == 0) {
+        robotName = optarg;
+      } else if (strcmp(longopts[optindex].name, "rossetjointtopic") == 0) {
         rosSetJointTopic = optarg;
       } else if (strcmp(longopts[optindex].name, "rosgetjointtopic") == 0) {
         rosGetJointTopic = optarg;
@@ -39,7 +43,7 @@ main(int argc, char** argv)
     }
   }
 
-  RosInterpolatorFri rosInterpolatorFri(rosSetJointTopic, rosGetJointTopic, rosStateTopic, friRecvPort, friSendPort);
+  RosInterpolatorFri rosInterpolatorFri(robotName, rosSetJointTopic, rosGetJointTopic, rosStateTopic, friRecvPort, friSendPort);
 
   std::cout << "Spinning" << std::endl;
   ros::spin();

@@ -10,8 +10,9 @@
 
 
 /*---------------------------------- public: -----------------------------{{{-*/
-RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
-  :m_rosSetJointTopic(p_rosSetJointTopic),
+RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
+  :m_robotName(p_robotName),
+   m_rosSetJointTopic(p_rosSetJointTopic),
    m_rosGetJointTopic(p_rosGetJointTopic),
    m_rosStateTopic(p_rosStateTopic),
    m_friRecvPort(p_friRecvPort),

@@ -32,7 +32,7 @@ class RosInterpolatorFri
 
 
     // constructors
-    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
+    RosInterpolatorFri(const std::string& p_robotName, const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
 
     // overwritten methods
 
@@ -54,6 +54,7 @@ class RosInterpolatorFri
     void rosPublish();
 
     // variables
+    std::string m_robotName;
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
     std::string m_rosStateTopic;
