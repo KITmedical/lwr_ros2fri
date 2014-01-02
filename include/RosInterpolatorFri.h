@@ -6,7 +6,6 @@
 // library includes
 #include <ros/ros.h>
 #include <std_msgs/String.h>
-#include <geometry_msgs/Pose.h>
 #include <sensor_msgs/JointState.h>
 
 #include <boost/thread.hpp>
