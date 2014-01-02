@@ -45,7 +45,7 @@ main(int argc, char** argv)
 
   RosInterpolatorFri rosInterpolatorFri(robotName, rosSetJointTopic, rosGetJointTopic, rosStateTopic, friRecvPort, friSendPort);
 
-  std::cout << "Spinning" << std::endl;
+  std::cout << "Spinning. friRecvPort=" << friRecvPort << " friSendPort=" << friSendPort << std::endl;
   ros::spin();
 
   return 0;
