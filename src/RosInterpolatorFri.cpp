@@ -10,9 +10,10 @@
 
 
 /*---------------------------------- public: -----------------------------{{{-*/
-RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
+RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort)
   :m_rosSetJointTopic(p_rosSetJointTopic),
    m_rosGetJointTopic(p_rosGetJointTopic),
+   m_rosStateTopic(p_rosStateTopic),
    m_friRecvPort(p_friRecvPort),
    m_friSendPort(p_friSendPort),
    m_gpi(LBR_MNJ),
@@ -54,6 +55,7 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_rosSetJointTopic, co
 
   m_rosSetJointTopicSub = m_rosNode.subscribe<sensor_msgs::JointState>(m_rosSetJointTopic, 1, &RosInterpolatorFri::rosSetJointCallback, this);
   m_rosGetJointTopicPub = m_rosNode.advertise<sensor_msgs::JointState>(m_rosGetJointTopic, 1);
+  m_rosStateTopicPub = m_rosNode.advertise<std_msgs::String>(m_rosStateTopic, 1);
 }
 /*------------------------------------------------------------------------}}}-*/
 

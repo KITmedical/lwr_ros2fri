@@ -5,6 +5,7 @@
 
 // library includes
 #include <ros/ros.h>
+#include <std_msgs/String.h>
 #include <geometry_msgs/Pose.h>
 #include <sensor_msgs/JointState.h>
 
@@ -18,17 +19,6 @@
 
 // forward declarations
 
-/*
- * TODO:
- * - take code from LwrModelPlugin to publish/subscribe ROS topics for robot
- * - use gpi to interpolate joints
- * - look at ICRACK-component.* for conversion to FRI messages (plwr->)
- *
- * Control flow:
- * - ROS Thread: Read incoming, update targets, read fri state, publish to topics
- * - FRI Thread: Wait for incoming fri message, update fri state, do gpi step, send values
- * mutex?
- */
 
 class RosInterpolatorFri
 {
@@ -43,7 +33,7 @@ class RosInterpolatorFri
 
 
     // constructors
-    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
+    RosInterpolatorFri(const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
 
     // overwritten methods
 
@@ -67,6 +57,7 @@ class RosInterpolatorFri
     // variables
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
+    std::string m_rosStateTopic;
 
     uint16_t m_friRecvPort;
     uint16_t m_friSendPort;
@@ -84,6 +75,7 @@ class RosInterpolatorFri
     ros::NodeHandle m_rosNode;
     ros::Subscriber m_rosSetJointTopicSub;
     ros::Publisher m_rosGetJointTopicPub;
+    ros::Publisher m_rosStateTopicPub;
     sensor_msgs::JointState m_rosCurrentJointState;
 
     GeneralPurposeInterpolator m_gpi;
