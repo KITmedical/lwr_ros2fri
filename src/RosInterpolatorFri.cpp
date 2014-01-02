@@ -168,6 +168,7 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 void
 RosInterpolatorFri::rosPublish()
 {
+  m_rosCurrentJointState.header.stamp = ros::Time::now();
   m_rosGetJointTopicPub.publish(m_rosCurrentJointState);
 }
 /*------------------------------------------------------------------------}}}-*/
