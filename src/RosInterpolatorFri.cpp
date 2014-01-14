@@ -6,7 +6,7 @@
 
 // custom includes
 #include <ahbstring.h>
-#include <lwr/LwrLibrary.hpp>
+#include <LwrLibrary.hpp>
 
 
 /*---------------------------------- public: -----------------------------{{{-*/

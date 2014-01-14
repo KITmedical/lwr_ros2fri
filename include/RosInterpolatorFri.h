@@ -14,7 +14,7 @@
 #include <friComm.h>
 
 // custom includes
-#include <gpi/GeneralPurposeInterpolator.hpp>
+#include <GeneralPurposeInterpolator.hpp>
 
 // forward declarations
 

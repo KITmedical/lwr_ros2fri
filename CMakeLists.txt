@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   lwr_analytical_kinematics
   lwr_friremote
   ahbstring
+  general_purpose_interpolator
 )
 
 ## System dependencies are found with CMake's conventions

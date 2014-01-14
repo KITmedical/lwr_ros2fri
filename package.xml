@@ -39,6 +39,8 @@
   <run_depend>lwr_friremote</run_depend>
   <build_depend>ahbstring</build_depend>
   <run_depend>ahbstring</run_depend>
+  <build_depend>general_purpose_interpolator</build_depend>
+  <run_depend>general_purpose_interpolator</run_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->
