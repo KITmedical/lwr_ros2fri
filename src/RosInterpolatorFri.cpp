@@ -161,7 +161,7 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     if (abs(jointsMsg->position[jointIdx]) > Lwr::jointLimits.j[jointIdx]) {
-      ROS_FATAL_STREAM("Joint" << jointIdx << " beyond joint limit (" << Lwr::jointLimits.j[jointIdx] << "). Will not move robot at all.\n");
+      ROS_FATAL_STREAM("Joint" << jointIdx << " beyond joint limit (is=" << jointsMsg->position[jointIdx] << " limit=" << Lwr::jointLimits.j[jointIdx] << "). Will not move robot at all.\n");
       // TODO use m_rosStateTopicPub
       return;
     }
