@@ -2,7 +2,7 @@
 <package>
   <name>lwr_ros2fri</name>
   <version>0.0.0</version>
-  <description>The lwr_ros2fri package</description>
+  <description>Translate ROS sensor_msgs/JointState topic to KUKA FRI</description>
   <maintainer email="andreas.bihlmaier@gmx.de">Andreas Bihlmaier</maintainer>
   <license>MIT</license>
 
