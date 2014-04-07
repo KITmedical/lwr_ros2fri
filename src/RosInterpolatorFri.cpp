@@ -74,12 +74,6 @@ RosInterpolatorFri::runFri()
                                                       ahb::string::toString(m_friSendPort));
   m_friSendEndpoint = *(m_friResolver->resolve(sendPortQuery));
 
-  try {
-    m_friSocket->connect(m_friSendEndpoint);
-  } catch (boost::system::system_error const& e) {
-    ROS_FATAL_STREAM("RosInterpolatorFri: Failed to connect to FRI robot: " << e.what());
-  }
-
   friRecvStart();
 
   m_friIoService->run();
@@ -131,7 +125,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   m_currentFriCmdData.head.reflSeqCount = m_lastFriMsrData.head.sendSeqCount;
   //printFriCmd(m_currentFriCmdData);
   try {
-    m_friSocket->send(boost::asio::buffer(&m_currentFriCmdData, sizeof(m_currentFriCmdData)));
+    m_friSocket->send_to(boost::asio::buffer(&m_currentFriCmdData, sizeof(m_currentFriCmdData)), m_friSendEndpoint);
   } catch (boost::system::system_error const& e) {
     ROS_FATAL_STREAM("RosInterpolatorFri: Failed to send to FRI robot: " << e.what());
   }
