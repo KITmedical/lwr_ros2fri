@@ -10,6 +10,7 @@ main(int argc, char** argv)
   std::string rosSetJointTopic = "lwr/direct/set_joint";
   std::string rosGetJointTopic = "lwr/direct/get_joint";
   std::string rosStateTopic = "lwr/direct/state";
+  std::string friHost = "localhost";
   uint16_t friRecvPort = 40008;
   uint16_t friSendPort = 49938;
 
@@ -18,6 +19,7 @@ main(int argc, char** argv)
     { "robotname", required_argument, NULL, 0 },
     { "rossetjointtopic", required_argument, NULL, 0 },
     { "rosgetjointtopic", required_argument, NULL, 0 },
+    { "frihost", required_argument, NULL, 0 },
     { "frirecvport", required_argument, NULL, 0 },
     { "frisendport", required_argument, NULL, 0 },
   };
@@ -34,6 +36,8 @@ main(int argc, char** argv)
         rosGetJointTopic = optarg;
       } else if (strcmp(longopts[optindex].name, "rosstatetopic") == 0) {
         rosStateTopic = optarg;
+      } else if (strcmp(longopts[optindex].name, "frihost") == 0) {
+        friHost = optarg;
       } else if (strcmp(longopts[optindex].name, "frirecvport") == 0) {
         friRecvPort = atoi(optarg);
       } else if (strcmp(longopts[optindex].name, "frisendport") == 0) {
@@ -43,9 +47,9 @@ main(int argc, char** argv)
     }
   }
 
-  RosInterpolatorFri rosInterpolatorFri(robotName, rosSetJointTopic, rosGetJointTopic, rosStateTopic, friRecvPort, friSendPort);
+  RosInterpolatorFri rosInterpolatorFri(robotName, rosSetJointTopic, rosGetJointTopic, rosStateTopic, friHost, friRecvPort, friSendPort);
 
-  std::cout << "Spinning. friRecvPort=" << friRecvPort << " friSendPort=" << friSendPort << std::endl;
+  std::cout << "Spinning. friHost=" << friHost << " friRecvPort=" << friRecvPort << " friSendPort=" << friSendPort << std::endl;
   ros::spin();
 
   return 0;

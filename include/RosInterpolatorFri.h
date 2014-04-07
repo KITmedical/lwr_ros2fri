@@ -32,7 +32,7 @@ class RosInterpolatorFri
 
 
     // constructors
-    RosInterpolatorFri(const std::string& p_robotName, const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, uint16_t p_friRecvPort, uint16_t p_friSendPort);
+    RosInterpolatorFri(const std::string& p_robotName, const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, const std::string& p_friHost, uint16_t p_friRecvPort, uint16_t p_friSendPort);
 
     // overwritten methods
 
@@ -47,6 +47,7 @@ class RosInterpolatorFri
     void friRecvStart();
     void friRecvCallback(const boost::system::error_code& p_error, std::size_t p_recvLength);
     void printFri(const tFriMsrData& p_friMsrData);
+    void printFriCmd(const tFriCmdData& p_friCmdData);
 
     void updateRosFromFri();
 
@@ -59,14 +60,14 @@ class RosInterpolatorFri
     std::string m_rosGetJointTopic;
     std::string m_rosStateTopic;
 
+    std::string m_friHost;
     uint16_t m_friRecvPort;
     uint16_t m_friSendPort;
     boost::thread* m_friThread;
     boost::asio::io_service* m_friIoService;
-    boost::asio::ip::udp::socket* m_friRecvSocket;
+    boost::asio::ip::udp::socket* m_friSocket;
     boost::asio::ip::udp::endpoint m_friRecvEndpoint;
     boost::asio::ip::udp::resolver* m_friResolver;
-    boost::asio::ip::udp::socket* m_friSendSocket;
     boost::asio::ip::udp::endpoint m_friSendEndpoint;
     boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
     tFriMsrData m_lastFriMsrData;
