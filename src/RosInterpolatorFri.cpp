@@ -185,9 +185,15 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 {
   //std::cout << "rosSetJointCallback: jointsMsg=" << *jointsMsg << std::endl;
 
+  if (m_lastFriMsrData.intf.state != FRI_STATE_CMD || m_lastFriMsrData.robot.power == 0) {
+    ROS_ERROR_STREAM("Robot " << m_robotName << " is not in command mode. Will not set target.");
+    return;
+  }
+
+
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     if (abs(jointsMsg->position[jointIdx]) > Lwr::jointLimits.j[jointIdx]) {
-      ROS_FATAL_STREAM("Joint" << jointIdx << " beyond joint limit (is=" << jointsMsg->position[jointIdx] << " limit=" << Lwr::jointLimits.j[jointIdx] << "). Will not move robot at all.\n");
+      ROS_FATAL_STREAM("Joint" << jointIdx << " beyond joint limit (is=" << jointsMsg->position[jointIdx] << " limit=" << Lwr::jointLimits.j[jointIdx] << "). Will not move robot at all.");
       // TODO use m_rosStateTopicPub
       return;
     }
