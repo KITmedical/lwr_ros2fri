@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ps_grep="_[r]os2fri"
-topic_grep="lwr*/direct/set_joint"
+topic_grep="lwr.*/direct/set_joint"
 pids=$(ps waux | egrep "$ps_grep" | awk '{ print $2 }')
 
 echo "$0: Waiting for topics $topic_grep to become available"

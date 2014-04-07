@@ -118,7 +118,9 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   if (m_lastFriMsrData.intf.state != FRI_STATE_CMD || m_lastFriMsrData.robot.power == 0) {
     for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
       m_currentFriCmdData.cmd.jntPos[jointIdx] = m_lastFriMsrData.data.cmdJntPos[jointIdx] + m_lastFriMsrData.data.cmdJntPosFriOffset[jointIdx];
+      m_gpiPosTargetBuffer[jointIdx] = m_lastFriMsrData.data.cmdJntPos[jointIdx];
     }
+    m_gpi.setXTarget(m_gpiPosTargetBuffer);
   } else {
     for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
       m_currentFriCmdData.cmd.jntPos[jointIdx] = m_gpiPosCurrentBuffer[jointIdx];
