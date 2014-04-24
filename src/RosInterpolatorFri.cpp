@@ -24,8 +24,8 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std
    m_gpiPosMinBuffer(LBR_MNJ, 0),
    m_gpiPosMaxBuffer(LBR_MNJ, 0),
    m_gpiVelCurrentBuffer(LBR_MNJ, 0),
-   m_gpiVelMaxBuffer(LBR_MNJ, 0.4),
-   m_gpiAccelMaxBuffer(LBR_MNJ, 0.4)
+   m_gpiVelMaxBuffer(LBR_MNJ, 0.8),
+   m_gpiAccelMaxBuffer(LBR_MNJ, 10.0)
 {
   // gpi
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
