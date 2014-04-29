@@ -17,5 +17,5 @@ pids=$(ps waux | egrep "$ps_grep" | awk '{ print $2 }')
 for pid in $pids
 do
 	echo "$0: Using sudo to set PID $pid to SCHED_RR with highest priority"
-	sudo chrt -r -p 99 $pid
+	sudo chrt -r -p 90 $pid
 done
