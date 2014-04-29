@@ -18,5 +18,5 @@ for pid in $pids
 do
 	echo "$0: Using sudo to set PID $pid to SCHED_RR and realtime IO class"
 	sudo chrt -r -p 90 $pid
-	sudio ionice -c 1 -p $pid
+	sudo ionice -c 1 -p $pid
 done
