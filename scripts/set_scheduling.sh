@@ -20,3 +20,6 @@ do
 	sudo chrt -r -p 90 $pid
 	sudo ionice -c 1 -p $pid
 done
+
+echo "Done going to sleep for a year"
+sleep 31536000
