@@ -57,7 +57,7 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std
   m_currentFriCmdData.head.datagramId = FRI_DATAGRAM_ID_CMD;
   m_currentFriCmdData.cmd.cmdFlags = FRI_CMD_JNTPOS;
 
-  m_friThread = new boost::thread(boost::bind(&RosInterpolatorFri::runFri, this));
+  runFri();
 }
 /*------------------------------------------------------------------------}}}-*/
 
@@ -76,7 +76,10 @@ RosInterpolatorFri::runFri()
 
   friRecvStart();
 
-  m_friIoService->run();
+  for (std::size_t i = 0; i < m_friThreadsCount; ++i) {
+    boost::shared_ptr<boost::thread> thread(new boost::thread(boost::bind(&boost::asio::io_service::run, m_friIoService)));
+    m_friThreads.push_back(thread);
+  }
 }
 
 void
@@ -102,11 +105,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
 
   memcpy(&m_lastFriMsrData, m_friRecvBuffer.data(), sizeof(m_lastFriMsrData));
   //printFri(m_lastFriMsrData);
-
-  m_gpi.interpolate();
-  m_gpi.getXNow(m_gpiPosCurrentBuffer);
-  m_gpi.getVNow(m_gpiVelCurrentBuffer);
-  //std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
+  friRecvStart();
 
   // "mirror commands to get in sync", see friremote.cpp friRemote::doPositionControl
   if (m_lastFriMsrData.intf.state != FRI_STATE_CMD || m_lastFriMsrData.robot.power == 0) {
@@ -116,6 +115,11 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
     }
     m_gpi.setXTarget(m_gpiPosTargetBuffer);
   } else {
+    m_gpi.interpolate();
+    m_gpi.getXNow(m_gpiPosCurrentBuffer);
+    m_gpi.getVNow(m_gpiVelCurrentBuffer);
+    //std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
+
     for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
       m_currentFriCmdData.cmd.jntPos[jointIdx] = m_gpiPosCurrentBuffer[jointIdx];
     }
@@ -130,7 +134,6 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
     ROS_FATAL_STREAM("RosInterpolatorFri: Failed to send to FRI robot: " << e.what());
   }
  
-  friRecvStart();
   updateRosFromFri();
   rosPublish();
 }

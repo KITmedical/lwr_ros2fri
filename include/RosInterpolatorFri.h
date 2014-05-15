@@ -27,6 +27,7 @@ class RosInterpolatorFri
     // typedefs
 
     // const static member variables
+    const static std::size_t m_friThreadsCount = 3;
  
     // static utility functions
 
@@ -63,7 +64,7 @@ class RosInterpolatorFri
     std::string m_friHost;
     uint16_t m_friRecvPort;
     uint16_t m_friSendPort;
-    boost::thread* m_friThread;
+    std::vector<boost::shared_ptr<boost::thread> > m_friThreads;
     boost::asio::io_service* m_friIoService;
     boost::asio::ip::udp::socket* m_friSocket;
     boost::asio::ip::udp::endpoint m_friRecvEndpoint;
