@@ -76,8 +76,9 @@ RosInterpolatorFri::runFri()
                                                       ahb::string::toString(m_friSendPort));
   m_friSendEndpoint = *(m_friResolver->resolve(sendPortQuery));
 
-  friRecvStart();
+  m_rosPublishThread = boost::shared_ptr<boost::thread>(new boost::thread(boost::bind(&RosInterpolatorFri::rosPublishLoop, this)));
 
+  friRecvStart();
   for (std::size_t i = 0; i < m_friThreadsCount; ++i) {
     boost::shared_ptr<boost::thread> thread(new boost::thread(boost::bind(&boost::asio::io_service::run, m_friIoService)));
     // Set FRI threads to real time priority
@@ -142,8 +143,18 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
     ROS_FATAL_STREAM("RosInterpolatorFri: Failed to send to FRI robot: " << e.what());
   }
  
-  updateRosFromFri();
-  rosPublish();
+  m_rosUpdateCondVar.notify_one();
+}
+
+void
+RosInterpolatorFri::rosPublishLoop()
+{
+  boost::unique_lock<boost::mutex> lock(m_rosUpdateMutex);
+  for (;;) {
+    m_rosUpdateCondVar.wait(lock);
+    updateRosFromFri();
+    rosPublish();
+  }
 }
 
 void

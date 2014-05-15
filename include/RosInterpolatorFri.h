@@ -54,6 +54,7 @@ class RosInterpolatorFri
 
     void rosSetJointCallback(const sensor_msgs::JointState::ConstPtr& jointsMsg);
     void rosPublish();
+    void rosPublishLoop();
 
     // variables
     std::string m_robotName;
@@ -79,6 +80,9 @@ class RosInterpolatorFri
     ros::Publisher m_rosGetJointTopicPub;
     ros::Publisher m_rosStateTopicPub;
     sensor_msgs::JointState m_rosCurrentJointState;
+    boost::shared_ptr<boost::thread> m_rosPublishThread;
+    boost::condition_variable m_rosUpdateCondVar;
+    boost::mutex m_rosUpdateMutex;
 
     GeneralPurposeInterpolator m_gpi;
     std::vector<double> m_gpiPosCurrentBuffer;
