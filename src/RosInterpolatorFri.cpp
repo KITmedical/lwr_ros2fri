@@ -1,6 +1,8 @@
 #include "RosInterpolatorFri.h"
 
 // system includes
+#include <pthread.h>
+#include <sched.h>
 
 // library includes
 
@@ -78,6 +80,12 @@ RosInterpolatorFri::runFri()
 
   for (std::size_t i = 0; i < m_friThreadsCount; ++i) {
     boost::shared_ptr<boost::thread> thread(new boost::thread(boost::bind(&boost::asio::io_service::run, m_friIoService)));
+    // Set FRI threads to real time priority
+    struct sched_param param;
+    param.sched_priority = 90;
+    if (pthread_setschedparam((pthread_t)thread->native_handle(), SCHED_RR, &param) != 0) {
+      ROS_FATAL_STREAM("Could not set FRI threads to realtime. See README.md for hints");
+    }
     m_friThreads.push_back(thread);
   }
 }
