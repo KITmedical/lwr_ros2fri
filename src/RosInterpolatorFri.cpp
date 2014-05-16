@@ -89,6 +89,7 @@ RosInterpolatorFri::runFri()
     }
     m_friThreads.push_back(thread);
   }
+  ROS_INFO_STREAM("Started " << m_friThreads.size() << " FRI realtime threads");
 }
 
 void
@@ -102,6 +103,8 @@ RosInterpolatorFri::friRecvStart()
 void
 RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, std::size_t p_recvLength)
 {
+  //std::cout << "Thread " << boost::this_thread::get_id() << ": friRecvCallback()" << std::endl;
+
   if (p_error) {
     ROS_FATAL_STREAM("friRecvCallback: " << p_error);
     return;
