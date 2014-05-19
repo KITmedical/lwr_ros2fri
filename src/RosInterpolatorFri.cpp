@@ -118,6 +118,11 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
   memcpy(&m_lastFriMsrData, m_friRecvBuffer.data(), sizeof(m_lastFriMsrData));
   //printFri(m_lastFriMsrData);
   friRecvStart();
+  
+  m_gpi.interpolate();
+  m_gpi.getXNow(m_gpiPosCurrentBuffer);
+  m_gpi.getVNow(m_gpiVelCurrentBuffer);
+  //std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
 
   // "mirror commands to get in sync", see friremote.cpp friRemote::doPositionControl
   if (m_lastFriMsrData.intf.state != FRI_STATE_CMD || m_lastFriMsrData.robot.power == 0) {
@@ -127,11 +132,6 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
     }
     m_gpi.setXTarget(m_gpiPosTargetBuffer);
   } else {
-    m_gpi.interpolate();
-    m_gpi.getXNow(m_gpiPosCurrentBuffer);
-    m_gpi.getVNow(m_gpiVelCurrentBuffer);
-    //std::cout << "m_gpiPosCurrentBuffer: " << ahb::string::toString(m_gpiPosCurrentBuffer) << std::endl;
-
     for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
       m_currentFriCmdData.cmd.jntPos[jointIdx] = m_gpiPosCurrentBuffer[jointIdx];
     }
