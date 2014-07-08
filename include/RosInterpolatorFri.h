@@ -28,6 +28,8 @@ class RosInterpolatorFri
 
     // const static member variables
     const static std::size_t m_friThreadsCount = 3;
+    const static double m_velMax = 0.8;
+    const static double m_accelMax = 10.0;
  
     // static utility functions
 

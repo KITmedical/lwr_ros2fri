@@ -26,8 +26,8 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std
    m_gpiPosMinBuffer(LBR_MNJ, 0),
    m_gpiPosMaxBuffer(LBR_MNJ, 0),
    m_gpiVelCurrentBuffer(LBR_MNJ, 0),
-   m_gpiVelMaxBuffer(LBR_MNJ, 0.8),
-   m_gpiAccelMaxBuffer(LBR_MNJ, 10.0)
+   m_gpiVelMaxBuffer(LBR_MNJ, m_velMax),
+   m_gpiAccelMaxBuffer(LBR_MNJ, m_accelMax)
 {
   // gpi
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
@@ -222,7 +222,21 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     m_gpiPosTargetBuffer[jointIdx] = jointsMsg->position[jointIdx];
+
+    if (jointsMsg->velocity.size() <= jointIdx || jointsMsg->velocity[jointIdx] < 1e-6 || jointsMsg->velocity[jointIdx] > m_velMax) {
+      m_gpiVelMaxBuffer[jointIdx] = m_velMax;
+    } else {
+      m_gpiVelMaxBuffer[jointIdx] = jointsMsg->velocity[jointIdx];
+    }
+
+    if (jointsMsg->effort.size() <= jointIdx || jointsMsg->effort[jointIdx] < 1e-6 || jointsMsg->effort[jointIdx] > m_accelMax) {
+      m_gpiAccelMaxBuffer[jointIdx] = m_accelMax;
+    } else {
+      m_gpiAccelMaxBuffer[jointIdx] = jointsMsg->effort[jointIdx];
+    }
   }
+  m_gpi.setVMax(m_gpiVelMaxBuffer);
+  m_gpi.setAMax(m_gpiAccelMaxBuffer);
   m_gpi.setXTarget(m_gpiPosTargetBuffer);
 }
 
