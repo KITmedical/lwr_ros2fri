@@ -208,6 +208,8 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
 
   if (m_lastFriMsrData.intf.state != FRI_STATE_CMD || m_lastFriMsrData.robot.power == 0) {
     ROS_ERROR_STREAM("Robot " << m_robotName << " is not in command mode. Will not set target.");
+    m_currentState.data = "LWR_ERROR|LWR_ROBOT_NOT_COMMAND_MODE";
+    m_rosStateTopicPub.publish(m_currentState);
     return;
   }
 
@@ -215,7 +217,8 @@ RosInterpolatorFri::rosSetJointCallback(const sensor_msgs::JointState::ConstPtr&
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     if (abs(jointsMsg->position[jointIdx]) > Lwr::jointLimits.j[jointIdx]) {
       ROS_FATAL_STREAM("Joint" << jointIdx << " beyond joint limit (is=" << jointsMsg->position[jointIdx] << " limit=" << Lwr::jointLimits.j[jointIdx] << "). Will not move robot at all.");
-      // TODO use m_rosStateTopicPub
+      m_currentState.data = "LWR_ERROR|LWR_JOINT_LIMIT_EXCEEDED";
+      m_rosStateTopicPub.publish(m_currentState);
       return;
     }
   }

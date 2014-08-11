@@ -81,6 +81,7 @@ class RosInterpolatorFri
     ros::Subscriber m_rosSetJointTopicSub;
     ros::Publisher m_rosGetJointTopicPub;
     ros::Publisher m_rosStateTopicPub;
+    std_msgs::String m_currentState;
     sensor_msgs::JointState m_rosCurrentJointState;
     boost::shared_ptr<boost::thread> m_rosPublishThread;
     boost::condition_variable m_rosUpdateCondVar;
