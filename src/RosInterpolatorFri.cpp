@@ -14,6 +14,7 @@
 /*---------------------------------- public: -----------------------------{{{-*/
 RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std::string& p_rosSetJointTopic, const std::string& p_rosGetJointTopic, const std::string& p_rosStateTopic, const std::string& p_friHost, uint16_t p_friRecvPort, uint16_t p_friSendPort)
   :m_robotName(p_robotName),
+   m_friPeriod(0.001),
    m_rosSetJointTopic(p_rosSetJointTopic),
    m_rosGetJointTopic(p_rosGetJointTopic),
    m_rosStateTopic(p_rosStateTopic),
@@ -41,7 +42,7 @@ RosInterpolatorFri::RosInterpolatorFri(const std::string& p_robotName, const std
   m_gpi.setXMax(m_gpiPosMaxBuffer);
   m_gpi.setVMax(m_gpiVelMaxBuffer);
   m_gpi.setAMax(m_gpiAccelMaxBuffer);
-  m_gpi.setDt(0.001);
+  m_gpi.setDt(m_friPeriod);
   m_gpi.setMode(1);
 
   // ros
@@ -115,6 +116,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
     return;
   }
 
+  memcpy(&m_previousFriMsrData, &m_lastFriMsrData, sizeof(m_lastFriMsrData));
   memcpy(&m_lastFriMsrData, m_friRecvBuffer.data(), sizeof(m_lastFriMsrData));
   //printFri(m_lastFriMsrData);
   friRecvStart();
@@ -197,6 +199,8 @@ RosInterpolatorFri::updateRosFromFri()
 {
   for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
     m_rosCurrentJointState.position[jointIdx] = m_lastFriMsrData.data.msrJntPos[jointIdx];
+    m_rosCurrentJointState.velocity[jointIdx] = (m_lastFriMsrData.data.msrJntPos[jointIdx] - m_previousFriMsrData.data.msrJntPos[jointIdx]) / m_friPeriod;
+    m_rosCurrentJointState.effort[jointIdx] = m_lastFriMsrData.data.msrJntTrq[jointIdx];
   }
 }
 

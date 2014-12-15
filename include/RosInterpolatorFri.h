@@ -60,6 +60,7 @@ class RosInterpolatorFri
 
     // variables
     std::string m_robotName;
+    double m_friPeriod;
     std::string m_rosSetJointTopic;
     std::string m_rosGetJointTopic;
     std::string m_rosStateTopic;
@@ -75,6 +76,7 @@ class RosInterpolatorFri
     boost::asio::ip::udp::endpoint m_friSendEndpoint;
     boost::array<char, sizeof(tFriMsrData)> m_friRecvBuffer;
     tFriMsrData m_lastFriMsrData;
+    tFriMsrData m_previousFriMsrData;
     tFriCmdData m_currentFriCmdData;
 
     ros::NodeHandle m_rosNode;
