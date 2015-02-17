@@ -132,6 +132,7 @@ RosInterpolatorFri::friRecvCallback(const boost::system::error_code& p_error, st
       m_currentFriCmdData.cmd.jntPos[jointIdx] = m_lastFriMsrData.data.cmdJntPos[jointIdx] + m_lastFriMsrData.data.cmdJntPosFriOffset[jointIdx];
       m_gpiPosTargetBuffer[jointIdx] = m_lastFriMsrData.data.cmdJntPos[jointIdx];
     }
+    m_gpi.setXLast(m_gpiPosTargetBuffer);
     m_gpi.setXTarget(m_gpiPosTargetBuffer);
   } else {
     for (size_t jointIdx = 0; jointIdx < LBR_MNJ; jointIdx++) {
